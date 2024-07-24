@@ -8,7 +8,7 @@ from flask_swagger import swagger
 from flask_cors import CORS
 from utils import APIException, generate_sitemap
 from admin import setup_admin
-from models import db, User
+from models import db, User, Characters, Planets, Ships
 #from models import Person
 
 app = Flask(__name__)
@@ -36,14 +36,108 @@ def handle_invalid_usage(error):
 def sitemap():
     return generate_sitemap(app)
 
-@app.route('/user', methods=['GET'])
-def handle_hello():
+# my endpoints
+@app.route('/users', methods=['GET'])
+def get_all_users():
+
+    results_query = User.query.all()
+    results = list(map(lambda item: item.serialize(),results_query))
 
     response_body = {
-        "msg": "Hello, this is your GET /user response "
+        "msg": "All good",
+        "results": results
     }
 
     return jsonify(response_body), 200
+
+@app.route('/users/<int:id>', methods=['GET'])
+def get_one_user(id):
+
+    results_query = User.query.filter_by(id=id).first()
+
+    response_body = {
+        "msg": "All good",
+        "results": results_query.serialize()
+    }
+
+    return jsonify(response_body), 200
+
+@app.route('/characters', methods=['GET'])
+def get_all_characters():
+
+    results_query = Characters.query.all()
+    results = list(map(lambda item: item.serialize(),results_query))
+
+    response_body = {
+        "msg": "All good",
+        "results": results
+    }
+
+    return jsonify(response_body), 200
+
+@app.route('/characters/<int:id>', methods=['GET'])
+def get_one_character(id):
+
+    results_query = Characters.query.filter_by(id=id).first()
+
+    response_body = {
+        "msg": "All good",
+        "results": results_query.serialize()
+    }
+
+    return jsonify(response_body), 200
+
+@app.route('/planets', methods=['GET'])
+def get_all_planets():
+
+    results_query = Planets.query.all()
+    results = list(map(lambda item: item.serialize(),results_query))
+
+    response_body = {
+        "msg": "All good",
+        "results": results
+    }
+
+    return jsonify(response_body), 200
+
+@app.route('/planets/<int:id>', methods=['GET'])
+def get_one_planet(id):
+
+    results_query = Planets.query.filter_by(id=id).first()
+
+    response_body = {
+        "msg": "All good",
+        "results": results_query.serialize()
+    }
+
+    return jsonify(response_body), 200
+
+@app.route('/ships', methods=['GET'])
+def get_all_ships():
+
+    results_query = Ships.query.all()
+    results = list(map(lambda item: item.serialize(),results_query))
+
+    response_body = {
+        "msg": "All good",
+        "results": results
+    }
+
+    return jsonify(response_body), 200
+
+@app.route('/ships/<int:id>', methods=['GET'])
+def get_one_ships(id):
+
+    results_query = Ships.query.filter_by(id=id).first()
+
+    response_body = {
+        "msg": "All good",
+        "results": results_query.serialize()
+    }
+
+    return jsonify(response_body), 200
+
+
 
 # this only runs if `$ python src/app.py` is executed
 if __name__ == '__main__':
