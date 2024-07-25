@@ -180,17 +180,55 @@ def add_user():
 
 # agregar un ship
 
-# # eliminar un character
-# @app.route('/characters/<int:char_id>', methods=['DELETE'])
-# def delete_character(char_id):
-#     character = Characters.query.get(char_id)
-#     if not character:
-#         return jsonify({"error": "Character not found"}), 404
+# eliminar un user
+@app.route('/users/<int:user_id>', methods=['DELETE'])
+def delete_user(user_id):
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({"error": "user not found"}), 404
     
-#     db.session.delete(character)
-#     db.session.commit()
-#     deleted_character = character.serialize()
-#     return jsonify({"message": "Character deleted", "character": deleted_character}), 200
+    db.session.delete(user)
+    db.session.commit()
+    deleted_user = user.serialize()
+    return jsonify({"message": "user deleted", "user": deleted_user}), 200
+
+# eliminar un character
+@app.route('/characters/<int:char_id>', methods=['DELETE'])
+def delete_character(char_id):
+    character = Characters.query.get(char_id)
+    if not character:
+        return jsonify({"error": "Character not found"}), 404
+    
+    db.session.delete(character)
+    db.session.commit()
+    deleted_character = character.serialize()
+    return jsonify({"message": "Character deleted", "character": deleted_character}), 200
+
+# eliminar un planet
+@app.route('/planets/<int:planet_id>', methods=['DELETE'])
+def delete_planet(planet_id):
+    planet = Planets.query.get(planet_id)
+    if not planet:
+        return jsonify({"error": "planet not found"}), 404
+    
+    db.session.delete(planet)
+    db.session.commit()
+    deleted_planet = planet.serialize()
+    return jsonify({"message": "planet deleted", "planet": deleted_planet}), 200
+
+# eliminar un ship
+@app.route('/ships/<int:ship_id>', methods=['DELETE'])
+def delete_ship(ship_id):
+    ship = Ships.query.get(ship_id)
+    if not ship:
+        return jsonify({"error": "ship not found"}), 404
+    
+    db.session.delete(ship)
+    db.session.commit()
+    deleted_ship = ship.serialize()
+    return jsonify({"message": "ship deleted", "ship": deleted_ship}), 200
+
+
 
 # agregar un character favorito a un usuario
 @app.route('/users/<int:user_id>/add_fav_char/<int:char_id>', methods=['POST'])
