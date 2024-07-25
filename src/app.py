@@ -161,6 +161,11 @@ def add_user():
     if not data:
         return jsonify({"error": "no data"}), 404
     
+    check_email = User.query.filter_by(email = data['email']).first()
+    check_username = User.query.filter_by(username = data['username']).first()
+    if check_email or check_username:
+        return jsonify({"error": "Username or Email already exists"}), 404
+    
     new_user = User(email = data["email"], is_active = data["is_active"], username = data["username"], password = data["password"])
 
     db.session.add(new_user)
@@ -169,8 +174,23 @@ def add_user():
 
     return jsonify(new_user_add)
 
+# agregar un character
 
+# agregar un planeta
 
+# agregar un ship
+
+# # eliminar un character
+# @app.route('/characters/<int:char_id>', methods=['DELETE'])
+# def delete_character(char_id):
+#     character = Characters.query.get(char_id)
+#     if not character:
+#         return jsonify({"error": "Character not found"}), 404
+    
+#     db.session.delete(character)
+#     db.session.commit()
+#     deleted_character = character.serialize()
+#     return jsonify({"message": "Character deleted", "character": deleted_character}), 200
 
 # agregar un character favorito a un usuario
 @app.route('/users/<int:user_id>/add_fav_char/<int:char_id>', methods=['POST'])
@@ -207,6 +227,51 @@ def add_favorite_ship(user_id, ship_id):
     user.fav_ships.append(ship)
     db.session.commit()
     return jsonify({"message": "Favorite ship added"}), 200
+
+# eliminar un character favorito de un usuario
+@app.route('/users/<int:user_id>/delete_fav_char/<int:char_id>', methods=['DELETE'])
+def delete_favorite_character(user_id, char_id):
+    user = User.query.get(user_id)
+    character = Characters.query.get(char_id)
+    if not user or not character:
+        return jsonify({"error": "User or Character not found"}), 404
+    
+    if character in user.fav_chars:
+        user.fav_chars.remove(character)
+        db.session.commit()
+        return jsonify({"message": "Favorite character removed"}), 200
+    else:
+        return jsonify({"error": "Character not in favorites"}), 404
+
+# eliminar un planet favorito de un usuario
+@app.route('/users/<int:user_id>/delete_fav_planet/<int:planet_id>', methods=['DELETE'])
+def delete_favorite_planet(user_id, planet_id):
+    user = User.query.get(user_id)
+    planet = Planets.query.get(planet_id)
+    if not user or not planet:
+        return jsonify({"error": "User or Planet not found"}), 404
+    
+    if planet in user.fav_planet:
+        user.fav_planet.remove(planet)
+        db.session.commit()
+        return jsonify({"message": "Favorite Planet removed"}), 200
+    else:
+        return jsonify({"error": "Planet not in favorites"}), 404
+
+# eliminar un ship favorito de un usuario
+@app.route('/users/<int:user_id>/delete_fav_ship/<int:ship_id>', methods=['DELETE'])
+def delete_favorite_ship(user_id, ship_id):
+    user = User.query.get(user_id)
+    ship = Ships.query.get(ship_id)
+    if not user or not ship:
+        return jsonify({"error": "User or Ship not found"}), 404
+    
+    if ship in user.fav_ship:
+        user.fav_ship.remove(ship)
+        db.session.commit()
+        return jsonify({"message": "Favorite Ship removed"}), 200
+    else:
+        return jsonify({"error": "Ship not in favorites"}), 404
 
 # this only runs if `$ python src/app.py` is executed
 if __name__ == '__main__':
