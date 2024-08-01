@@ -175,6 +175,24 @@ def add_user():
     return jsonify(new_user_add)
 
 # agregar un character
+@app.route('/characters/', methods=['POST'])
+def add_character():
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "no data"}), 404
+    
+    check_name = Characters.query.filter_by(name = data['name']).first()
+
+    if check_name:
+        return jsonify({"error": "Character name already exists"}), 404
+    
+    new_character = Characters(name = data["Name"], gender = data["Gender"], eye_color = data["EyeColor"], age = data["Age"])
+
+    db.session.add(new_character)
+    db.session.commit()
+    new_character_add = new_user.serialize()
+
+    return jsonify(new_character_add)
 
 # agregar un planeta
 
