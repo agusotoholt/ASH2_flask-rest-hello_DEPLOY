@@ -155,7 +155,7 @@ def get_user_favorites(user_id):
     return jsonify(response)
 
 # agregar un usuario
-@app.route('/users/', methods=['POST'])
+@app.route('/users', methods=['POST'])
 def add_user():
     data = request.get_json()
     if not data:
@@ -175,7 +175,7 @@ def add_user():
     return jsonify(new_user_add)
 
 # agregar un character
-@app.route('/characters/', methods=['POST'])
+@app.route('/characters', methods=['POST'])
 def add_character():
     data = request.get_json()
     if not data:
@@ -186,17 +186,54 @@ def add_character():
     if check_name:
         return jsonify({"error": "Character name already exists"}), 404
     
-    new_character = Characters(name = data["Name"], gender = data["Gender"], eye_color = data["EyeColor"], age = data["Age"])
+    new_character = Characters(name = data["name"], gender = data["gender"], eye_color = data["eye_color"], age = data["age"])
 
     db.session.add(new_character)
     db.session.commit()
-    new_character_add = new_user.serialize()
+    new_character_add = new_character.serialize()
 
     return jsonify(new_character_add)
 
 # agregar un planeta
+@app.route('/planets', methods=['POST'])
+def add_planet():
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "no data"}), 404
+    
+    check_name = Planets.query.filter_by(name = data['name']).first()
+
+    if check_name:
+        return jsonify({"error": "Planet name already exists"}), 404
+    
+    new_planet = Planets(name = data["name"], terrain = data["terrain"], diameter = data["diameter"], atmosphere = data["atmosphere"])
+
+    db.session.add(new_planet)
+    db.session.commit()
+    new_planet_add = new_planet.serialize()
+
+    return jsonify(new_planet_add)
 
 # agregar un ship
+@app.route('/ships', methods=['POST'])
+def add_ship():
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "no data"}), 404
+    
+    check_name = Ships.query.filter_by(name = data['name']).first()
+
+    if check_name:
+        return jsonify({"error": "ship name already exists"}), 404
+    
+    new_ship = Ships(name = data["name"], passengers = data["passengers"], manufacturer = data["manufacturer"])
+    print(new_ship)
+
+    db.session.add(new_ship)
+    db.session.commit()
+    new_ship_add = new_ship.serialize()
+
+    return jsonify(new_ship_add)
 
 # eliminar un user
 @app.route('/users/<int:user_id>', methods=['DELETE'])
